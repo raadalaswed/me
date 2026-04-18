@@ -175,42 +175,6 @@ section > h2 {
 }
 .contact-btn.tg:hover { background: rgba(56,189,248,0.2); transform: translateY(-2px); }
 
-/* PASSWORD MODAL */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.75); z-index: 9999;
-  align-items: center; justify-content: center;
-  backdrop-filter: blur(6px);
-}
-.modal-overlay.active { display: flex; }
-.modal-box {
-  background: #0d1b2e; border: 1px solid rgba(56,189,248,0.25);
-  border-radius: 20px; padding: 36px; width: 90%; max-width: 380px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(56,189,248,0.05);
-}
-.modal-box h3 { color: #f1f5f9; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-.modal-box p { color: #64748b; font-size: 14px; margin-bottom: 20px; }
-.modal-input {
-  width: 100%; padding: 12px 16px; border-radius: 10px;
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(56,189,248,0.2);
-  color: #f1f5f9; font-size: 15px; outline: none; margin-bottom: 16px;
-  transition: border-color 0.2s;
-}
-.modal-input:focus { border-color: rgba(56,189,248,0.5); background: rgba(56,189,248,0.04); }
-.modal-btns { display: flex; gap: 10px; }
-.modal-confirm {
-  flex: 1; padding: 12px; background: #38bdf8; color: #060d1a;
-  border: none; border-radius: 10px; font-weight: 700; font-size: 15px;
-  cursor: pointer; transition: all 0.2s;
-}
-.modal-confirm:hover { background: #7dd3fc; }
-.modal-cancel {
-  padding: 12px 18px; background: transparent; color: #64748b;
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-  font-size: 15px; cursor: pointer; transition: all 0.2s;
-}
-.modal-cancel:hover { color: #94a3b8; border-color: rgba(255,255,255,0.2); }
-.modal-error { color: #f87171; font-size: 13px; margin-bottom: 10px; display: none; }
 
 footer {
   text-align: center; padding: 28px 20px;
@@ -282,35 +246,35 @@ footer span { color: #38bdf8; }
       <div class="card-icon">🏋️</div>
       <h3>نظام الجيم</h3>
       <p>نظام شخصي لتتبع التمارين والكورسات وتنظيم التدريب بشكل احترافي.</p>
-      <span class="card-link" onclick="openProject('https://raadalaswed.github.io/newgym/')">دخول ←</span>
+      <a class="card-link" href="https://raadalaswed.github.io/newgym/" target="_blank" rel="noopener">دخول ←</a>
     </div>
 
     <div class="card">
       <div class="card-icon">🚗</div>
       <h3>نظام كراج</h3>
       <p>إدارة إدخال وإخراج السيارات مع تفاصيل كاملة والأجور.</p>
-      <span class="card-link" onclick="openProject('https://raadalaswed.github.io/garage/')">دخول ←</span>
+      <a class="card-link" href="https://raadalaswed.github.io/garage/" target="_blank" rel="noopener">دخول ←</a>
     </div>
 
     <div class="card">
       <div class="card-icon">📒</div>
       <h3>دفتر الديون</h3>
       <p>إدارة ديون الزبائن وتتبع الحسابات بسهولة ودقة.</p>
-      <span class="card-link" onclick="openProject('https://raadalaswed.github.io/mangerr/')">دخول ←</span>
+      <a class="card-link" href="https://raadalaswed.github.io/mangerr/" target="_blank" rel="noopener">دخول ←</a>
     </div>
 
     <div class="card">
       <div class="card-icon">💳</div>
       <h3>مصاريفي</h3>
       <p>تتبع المصاريف الشخصية وتحليل الميزانية بذكاء.</p>
-      <span class="card-link" onclick="openProject('https://raadalaswed.github.io/abc/')">دخول ←</span>
+      <a class="card-link" href="https://raadalaswed.github.io/abc/" target="_blank" rel="noopener">دخول ←</a>
     </div>
 
     <div class="card">
       <div class="card-icon">🎲</div>
       <h3>نظام الدومنة</h3>
       <p>تنظيم بطولات الدومنة وجدولة المباريات بين الفرق.</p>
-      <span class="card-link" onclick="openProject('https://raadalaswed.github.io/do/')">دخول ←</span>
+      <a class="card-link" href="https://raadalaswed.github.io/do/" target="_blank" rel="noopener">دخول ←</a>
     </div>
 
   </div>
@@ -378,59 +342,7 @@ footer span { color: #38bdf8; }
 
 <footer>© 2026 — <span>رعد الأسود</span> · جميع الحقوق محفوظة</footer>
 
-<!-- PASSWORD MODAL -->
-<div class="modal-overlay" id="modal">
-  <div class="modal-box">
-    <h3>🔐 دخول محمي</h3>
-    <p>هذا المشروع خاص — ادخل كلمة السر للمتابعة</p>
-    <p class="modal-error" id="modal-error">❌ كلمة السر غير صحيحة، حاول مجدداً</p>
-    <input class="modal-input" type="password" id="modal-pass" placeholder="كلمة السر..." onkeydown="if(event.key==='Enter')confirmAccess()" />
-    <div class="modal-btns">
-      <button class="modal-confirm" onclick="confirmAccess()">دخول</button>
-      <button class="modal-cancel" onclick="closeModal()">إلغاء</button>
-    </div>
-  </div>
-</div>
-
 <script>
-let pendingUrl = '';
-
-function openProject(url) {
-  pendingUrl = url;
-  document.getElementById('modal-pass').value = '';
-  document.getElementById('modal-error').style.display = 'none';
-  document.getElementById('modal').classList.add('active');
-  setTimeout(() => document.getElementById('modal-pass').focus(), 100);
-}
-
-function confirmAccess() {
-  const pass = document.getElementById('modal-pass').value;
-  if (pass === '77777778') {
-    closeModal();
-    const a = document.createElement('a');
-    a.href = pendingUrl;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  } else {
-    const err = document.getElementById('modal-error');
-    err.style.display = 'block';
-    document.getElementById('modal-pass').value = '';
-    document.getElementById('modal-pass').focus();
-  }
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('active');
-  pendingUrl = '';
-}
-
-document.getElementById('modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
 function smoothScroll(id) {
   document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
 }
