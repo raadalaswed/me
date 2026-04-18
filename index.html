@@ -407,7 +407,13 @@ function confirmAccess() {
   const pass = document.getElementById('modal-pass').value;
   if (pass === '77777778') {
     closeModal();
-    window.open(pendingUrl, '_blank');
+    const a = document.createElement('a');
+    a.href = pendingUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   } else {
     const err = document.getElementById('modal-error');
     err.style.display = 'block';
