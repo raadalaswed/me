@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم — رعد الأسود</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+body { background: #060d1a; color: #e2e8f0; min-height: 100vh; }
+
+/* ─── LOADING ─── */
+#loading-overlay {
+  position: fixed; inset: 0; background: #060d1a;
+  display: flex; align-items: center; justify-content: center; z-index: 9999;
+  transition: opacity 0.4s;
+}
+#loading-overlay.hidden { opacity: 0; pointer-events: none; }
+.loader-spinner {
+  width: 44px; height: 44px; border: 3px solid rgba(56,189,248,0.15);
+  border-top-color: #38bdf8; border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-box { text-align: center; }
+.loader-box p { color: #38bdf8; font-size: 14px; letter-spacing: 1px; }
+
+/* ─── NAV ─── */
+nav {
+  position: sticky; top: 0; width: 100%;
+  background: rgba(6,13,26,0.95); backdrop-filter: blur(16px);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 32px; z-index: 1000;
+  border-bottom: 1px solid rgba(56,189,248,0.12);
+}
+nav h1 { color: #38bdf8; font-size: 18px; letter-spacing: 1px; }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-badge {
+  background: rgba(251,191,36,0.12); color: #fbbf24;
+  border: 1px solid rgba(251,191,36,0.25);
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+}
+.btn-back {
+  color: #94a3b8; text-decoration: none;
+  padding: 7px 16px; border-radius: 20px;
+  border: 1px solid rgba(56,189,248,0.2); font-size: 14px; transition: all 0.25s;
+}
+.btn-back:hover { background: rgba(56,189,248,0.1); color: #38bdf8; }
+.btn-logout {
+  color: #f87171; padding: 7px 16px; border-radius: 20px;
+  border: 1px solid rgba(239,68,68,0.25); font-size: 14px;
+  cursor: pointer; background: transparent; transition: all 0.25s;
+}
+.btn-logout:hover { background: rgba(239,68,68,0.1); }
+
+/* ─── MAIN ─── */
+main { max-width: 960px; margin: auto; padding: 40px 20px; }
+
+.page-header { margin-bottom: 32px; }
+.page-header h2 { font-size: 26px; color: #f1f5f9; margin-bottom: 6px; }
+.page-header p { color: #64748b; font-size: 14px; }
+
+/* Stats row */
+.stats-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 32px; }
+.stat-card {
+  flex: 1; min-width: 140px;
+  background: linear-gradient(145deg, #0d1b2e, #070f1e);
+  border: 1px solid rgba(56,189,248,0.1);
+  border-radius: 16px; padding: 20px 22px;
+}
+.stat-card .stat-num { font-size: 30px; font-weight: 700; color: #38bdf8; }
+.stat-card .stat-label { color: #64748b; font-size: 13px; margin-top: 4px; }
+
+/* Toolbar */
+.toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.filter-btn {
+  padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1px solid rgba(56,189,248,0.2);
+  background: transparent; color: #64748b; transition: all 0.2s;
+}
+.filter-btn.active { background: rgba(56,189,248,0.15); color: #38bdf8; border-color: rgba(56,189,248,0.4); }
+.filter-btn:hover:not(.active) { background: rgba(56,189,248,0.07); color: #94a3b8; }
+.refresh-btn {
+  margin-right: auto; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1px solid rgba(56,189,248,0.25);
+  background: rgba(56,189,248,0.08); color: #38bdf8; transition: all 0.2s;
+}
+.refresh-btn:hover { background: rgba(56,189,248,0.15); }
+
+/* User table */
+.users-table {
+  background: linear-gradient(145deg, #0d1b2e, #070f1e);
+  border: 1px solid rgba(56,189,248,0.1);
+  border-radius: 18px; overflow: hidden;
+}
+.table-head {
+  display: grid; grid-template-columns: 1fr 120px 130px 200px;
+  padding: 14px 22px;
+  background: rgba(56,189,248,0.05);
+  border-bottom: 1px solid rgba(56,189,248,0.1);
+  font-size: 12px; font-weight: 600; color: #64748b; letter-spacing: 0.8px; text-transform: uppercase;
+}
+.user-row {
+  display: grid; grid-template-columns: 1fr 120px 130px 200px;
+  padding: 16px 22px; border-bottom: 1px solid rgba(56,189,248,0.06);
+  align-items: center; transition: background 0.2s;
+}
+.user-row:last-child { border-bottom: none; }
+.user-row:hover { background: rgba(56,189,248,0.03); }
+.user-email { color: #cbd5e1; font-size: 14px; }
+.role-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;
+}
+.role-badge.admin { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); }
+.role-badge.user  { background: rgba(56,189,248,0.08); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.15); }
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;
+}
+.status-badge.approved { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+.status-badge.pending  { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.status-badge.approved .status-dot { background: #4ade80; }
+.status-badge.pending  .status-dot { background: #fbbf24; }
+
+.action-btns { display: flex; gap: 8px; }
+.btn-approve {
+  padding: 6px 14px; background: rgba(34,197,94,0.1); color: #4ade80;
+  border: 1px solid rgba(34,197,94,0.25); border-radius: 8px;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.btn-approve:hover { background: rgba(34,197,94,0.2); transform: translateY(-1px); }
+.btn-reject {
+  padding: 6px 14px; background: rgba(239,68,68,0.1); color: #f87171;
+  border: 1px solid rgba(239,68,68,0.25); border-radius: 8px;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.btn-reject:hover { background: rgba(239,68,68,0.2); transform: translateY(-1px); }
+.btn-sm-disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+
+.empty-state { text-align: center; padding: 48px 20px; color: #475569; font-size: 15px; }
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: #0f1e38; border: 1px solid rgba(56,189,248,0.3);
+  color: #e2e8f0; padding: 12px 24px; border-radius: 12px;
+  font-size: 14px; font-weight: 500; z-index: 9000;
+  transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+  white-space: nowrap;
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+
+@media(max-width:640px) {
+  .table-head, .user-row { grid-template-columns: 1fr 90px; }
+  .table-head > *:nth-child(n+3), .user-row > *:nth-child(n+3) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+  <div class="loader-box">
+    <div class="loader-spinner"></div>
+    <p>التحقق من الصلاحيات...</p>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <h1>⚙️ لوحة التحكم</h1>
+  <div class="nav-right">
+    <span class="nav-badge">👑 مشرف</span>
+    <a href="index.html" class="btn-back">← الموقع</a>
+    <button class="btn-logout" onclick="doLogout()">خروج</button>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <h2>إدارة المستخدمين</h2>
+    <p>عرض وإدارة جميع الحسابات المسجلة في الموقع</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="stat-total">—</div>
+      <div class="stat-label">إجمالي المستخدمين</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-approved" style="color:#4ade80">—</div>
+      <div class="stat-label">موافق عليهم</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-pending" style="color:#fbbf24">—</div>
+      <div class="stat-label">بانتظار الموافقة</div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <button class="filter-btn active" onclick="setFilter('all', this)">الكل</button>
+    <button class="filter-btn" onclick="setFilter('pending', this)">بانتظار الموافقة</button>
+    <button class="filter-btn" onclick="setFilter('approved', this)">موافق عليهم</button>
+    <button class="refresh-btn" onclick="loadUsers()">↻ تحديث</button>
+  </div>
+
+  <!-- Users Table -->
+  <div class="users-table">
+    <div class="table-head">
+      <div>البريد الإلكتروني</div>
+      <div>الدور</div>
+      <div>الحالة</div>
+      <div>الإجراءات</div>
+    </div>
+    <div id="users-list">
+      <div class="empty-state">جاري التحميل...</div>
+    </div>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+
+<!-- ═══════════════════════════════════════════
+     FIREBASE SDK
+════════════════════════════════════════════ -->
+<script type="module">
+  // ┌─────────────────────────────────────────────┐
+  // │  🔥 نفس إعدادات Firebase من index.html      │
+  // └─────────────────────────────────────────────┘
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth, signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, collection, getDocs, doc, getDoc, updateDoc, deleteDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ▼▼▼ ضع نفس إعدادات Firebase هنا ▼▼▼
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7EVNCSl48CQgIC_a8wdC5UG2tKLtNKjQ",
+    authDomain: "garag-system.firebaseapp.com",
+    databaseURL: "https://garag-system-default-rtdb.firebaseio.com",
+    projectId: "garag-system",
+    storageBucket: "garag-system.firebasestorage.app",
+    messagingSenderId: "330947022055",
+    appId: "1:330947022055:web:d0c9d378e200c7de45a642"
+  };
+  // ▲▲▲ انتهى مكان الإعدادات ▲▲▲
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  const loadingEl = document.getElementById('loading-overlay');
+
+  let allUsers   = [];
+  let curFilter  = 'all';
+
+  // ── Guard: admin only ──
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'index.html'; return; }
+
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (!snap.exists() || snap.data().role !== 'admin') {
+      window.location.href = 'index.html'; return;
+    }
+
+    loadingEl.classList.add('hidden');
+    loadUsers();
+  });
+
+  // ── Load all users ──
+  window.loadUsers = async function() {
+    document.getElementById('users-list').innerHTML = '<div class="empty-state">جاري التحميل...</div>';
+    const snap = await getDocs(collection(db, 'users'));
+    allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    updateStats();
+    renderUsers();
+  };
+
+  function updateStats() {
+    const approved = allUsers.filter(u => u.approved).length;
+    const pending  = allUsers.filter(u => !u.approved).length;
+    document.getElementById('stat-total').textContent    = allUsers.length;
+    document.getElementById('stat-approved').textContent = approved;
+    document.getElementById('stat-pending').textContent  = pending;
+  }
+
+  function renderUsers() {
+    const list = document.getElementById('users-list');
+    let filtered = allUsers;
+    if (curFilter === 'approved') filtered = allUsers.filter(u => u.approved);
+    if (curFilter === 'pending')  filtered = allUsers.filter(u => !u.approved);
+
+    if (!filtered.length) {
+      list.innerHTML = '<div class="empty-state">لا يوجد مستخدمون في هذه الفئة</div>';
+      return;
+    }
+
+    list.innerHTML = filtered.map(u => `
+      <div class="user-row" id="row-${u.id}">
+        <div class="user-email">${u.email || '—'}</div>
+        <div><span class="role-badge ${u.role === 'admin' ? 'admin' : 'user'}">${u.role === 'admin' ? '👑 مشرف' : '👤 مستخدم'}</span></div>
+        <div>
+          <span class="status-badge ${u.approved ? 'approved' : 'pending'}">
+            <span class="status-dot"></span>
+            ${u.approved ? 'موافق عليه' : 'بانتظار'}
+          </span>
+        </div>
+        <div class="action-btns">
+          ${!u.approved
+            ? `<button class="btn-approve" onclick="approveUser('${u.id}')">✓ موافقة</button>`
+            : `<button class="btn-approve btn-sm-disabled">✓ موافقة</button>`
+          }
+          ${u.role !== 'admin'
+            ? `<button class="btn-reject" onclick="rejectUser('${u.id}', '${u.email}')">✕ حذف</button>`
+            : `<button class="btn-reject btn-sm-disabled">✕ حذف</button>`
+          }
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ── Approve ──
+  window.approveUser = async function(uid) {
+    try {
+      await updateDoc(doc(db, 'users', uid), { approved: true });
+      const u = allUsers.find(x => x.id === uid);
+      if (u) u.approved = true;
+      updateStats(); renderUsers();
+      showToast('✅ تمت الموافقة على المستخدم');
+    } catch(e) { showToast('❌ خطأ: ' + e.message); }
+  };
+
+  // ── Reject/Delete ──
+  window.rejectUser = async function(uid, email) {
+    if (!confirm(`هل أنت متأكد من حذف المستخدم:\n${email}؟`)) return;
+    try {
+      await deleteDoc(doc(db, 'users', uid));
+      allUsers = allUsers.filter(u => u.id !== uid);
+      updateStats(); renderUsers();
+      showToast('🗑️ تم حذف المستخدم');
+    } catch(e) { showToast('❌ خطأ: ' + e.message); }
+  };
+
+  // ── Filter ──
+  window.setFilter = function(f, btn) {
+    curFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderUsers();
+  };
+
+  // ── Logout ──
+  window.doLogout = async function() {
+    await signOut(auth);
+    window.location.href = 'index.html';
+  };
+
+  // ── Toast ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
