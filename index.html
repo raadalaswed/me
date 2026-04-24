@@ -9,7 +9,114 @@
 
 body { background: #060d1a; color: #e2e8f0; scroll-behavior: smooth; }
 
-/* NAV */
+/* ─── LOADING OVERLAY ─── */
+#loading-overlay {
+  position: fixed; inset: 0; background: #060d1a;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999; transition: opacity 0.4s;
+}
+#loading-overlay.hidden { opacity: 0; pointer-events: none; }
+.loader-box { text-align: center; }
+.loader-spinner {
+  width: 44px; height: 44px; border: 3px solid rgba(56,189,248,0.15);
+  border-top-color: #38bdf8; border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-box p { color: #38bdf8; font-size: 14px; letter-spacing: 1px; }
+
+/* ─── AUTH OVERLAY ─── */
+#auth-overlay {
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgba(56,189,248,0.06) 0%, transparent 70%), #060d1a;
+  display: none; align-items: center; justify-content: center;
+  z-index: 5000; padding: 20px;
+}
+#auth-overlay.active { display: flex; }
+
+.auth-card {
+  background: linear-gradient(145deg, #0f1e38, #070f1e);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 24px; padding: 44px 40px; width: 100%; max-width: 440px;
+  box-shadow: 0 0 60px rgba(56,189,248,0.08), inset 0 1px 0 rgba(56,189,248,0.1);
+}
+.auth-logo {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700; color: #060d1a;
+  margin: 0 auto 20px;
+}
+.auth-card h2 { text-align: center; color: #f1f5f9; font-size: 22px; margin-bottom: 6px; }
+.auth-card .auth-sub { text-align: center; color: #64748b; font-size: 14px; margin-bottom: 28px; }
+
+.auth-tabs { display: flex; gap: 0; margin-bottom: 28px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(56,189,248,0.18); }
+.auth-tab {
+  flex: 1; padding: 10px; text-align: center; cursor: pointer;
+  font-size: 14px; font-weight: 600; color: #64748b;
+  background: transparent; border: none; transition: all 0.25s;
+}
+.auth-tab.active { background: rgba(56,189,248,0.15); color: #38bdf8; }
+.auth-tab:hover:not(.active) { background: rgba(56,189,248,0.06); color: #94a3b8; }
+
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.auth-form label { font-size: 13px; color: #94a3b8; margin-bottom: 4px; display: block; }
+.auth-form input {
+  width: 100%; padding: 12px 16px;
+  background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.18);
+  border-radius: 10px; color: #f1f5f9; font-size: 14px;
+  outline: none; transition: border-color 0.25s;
+}
+.auth-form input:focus { border-color: rgba(56,189,248,0.5); background: rgba(56,189,248,0.08); }
+.auth-form input::placeholder { color: #334155; }
+
+.auth-btn {
+  width: 100%; padding: 13px; background: #38bdf8; color: #060d1a;
+  border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.25s; margin-top: 6px;
+}
+.auth-btn:hover { background: #7dd3fc; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56,189,248,0.3); }
+.auth-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.auth-msg {
+  text-align: center; font-size: 13px; padding: 10px 14px;
+  border-radius: 8px; margin-top: 8px; display: none;
+}
+.auth-msg.error { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); display: block; }
+.auth-msg.success { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); display: block; }
+.auth-msg.warning { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); display: block; }
+
+/* ─── PENDING OVERLAY ─── */
+#pending-overlay {
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgba(251,191,36,0.05) 0%, transparent 70%), #060d1a;
+  display: none; align-items: center; justify-content: center;
+  z-index: 5000; padding: 20px;
+}
+#pending-overlay.active { display: flex; }
+.pending-card {
+  background: linear-gradient(145deg, #1a150a, #070f1e);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 24px; padding: 48px 40px; text-align: center;
+  max-width: 440px; width: 100%;
+  box-shadow: 0 0 60px rgba(251,191,36,0.06);
+}
+.pending-icon { font-size: 52px; margin-bottom: 20px; }
+.pending-card h2 { color: #fbbf24; font-size: 22px; margin-bottom: 12px; }
+.pending-card p { color: #64748b; font-size: 15px; line-height: 1.7; }
+.pending-logout {
+  margin-top: 28px; padding: 11px 28px;
+  background: transparent; color: #f87171;
+  border: 1px solid rgba(239,68,68,0.3); border-radius: 10px;
+  cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.25s;
+}
+.pending-logout:hover { background: rgba(239,68,68,0.1); transform: translateY(-2px); }
+
+/* ─── MAIN CONTENT (hidden by default) ─── */
+#main-content { display: none; }
+#main-content.visible { display: block; }
+
+/* ─── NAV ─── */
 nav {
   position: fixed; width: 100%; top: 0;
   background: rgba(6,13,26,0.92);
@@ -19,7 +126,7 @@ nav {
   border-bottom: 1px solid rgba(56,189,248,0.1);
 }
 nav h1 { color: #38bdf8; font-size: 20px; letter-spacing: 1px; }
-.nav-links { display: flex; gap: 6px; }
+.nav-links { display: flex; gap: 6px; align-items: center; }
 nav a {
   color: #94a3b8; text-decoration: none;
   padding: 7px 16px; border-radius: 20px;
@@ -27,8 +134,18 @@ nav a {
   border: 1px solid transparent;
 }
 nav a:hover { background: rgba(56,189,248,0.12); color: #38bdf8; border-color: rgba(56,189,248,0.3); }
+.nav-user { color: #64748b; font-size: 13px; padding: 7px 12px; }
+.btn-logout {
+  color: #f87171 !important; border-color: rgba(239,68,68,0.25) !important;
+  cursor: pointer;
+}
+.btn-logout:hover { background: rgba(239,68,68,0.1) !important; color: #f87171 !important; border-color: rgba(239,68,68,0.4) !important; }
+.btn-admin {
+  color: #fbbf24 !important; border-color: rgba(251,191,36,0.25) !important;
+}
+.btn-admin:hover { background: rgba(251,191,36,0.1) !important; color: #fbbf24 !important; }
 
-/* HERO */
+/* ─── HERO ─── */
 .hero {
   min-height: 100vh; display: flex; align-items: center; justify-content: center;
   padding: 100px 20px 60px;
@@ -69,7 +186,7 @@ nav a:hover { background: rgba(56,189,248,0.12); color: #38bdf8; border-color: r
 }
 .btn-outline:hover { background: rgba(56,189,248,0.1); transform: translateY(-2px); }
 
-/* SECTIONS */
+/* ─── SECTIONS ─── */
 section { padding: 70px 20px; max-width: 980px; margin: auto; }
 .section-label {
   display: inline-flex; align-items: center; gap: 8px;
@@ -88,10 +205,8 @@ section > h2 {
   color: #94a3b8; font-size: 15.5px;
 }
 
-/* SKILLS */
-.skills-grid {
-  display: flex; flex-wrap: wrap; gap: 12px;
-}
+/* ─── SKILLS ─── */
+.skills-grid { display: flex; flex-wrap: wrap; gap: 12px; }
 .skill-chip {
   background: rgba(56,189,248,0.07); border: 1px solid rgba(56,189,248,0.2);
   color: #7dd3fc; padding: 9px 20px; border-radius: 24px;
@@ -99,7 +214,7 @@ section > h2 {
 }
 .skill-chip:hover { background: rgba(56,189,248,0.15); transform: translateY(-2px); }
 
-/* PROJECTS GRID */
+/* ─── PROJECTS GRID ─── */
 .grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
 @media(min-width:640px) { .grid { grid-template-columns: repeat(2,1fr); } }
 @media(min-width:900px) { .grid { grid-template-columns: repeat(3,1fr); } }
@@ -127,7 +242,7 @@ section > h2 {
 }
 .card-link:hover { background: rgba(56,189,248,0.16); transform: translateY(-1px); }
 
-/* ACHIEVEMENTS */
+/* ─── ACHIEVEMENTS ─── */
 .achievement-list { display: flex; flex-direction: column; gap: 14px; }
 .achievement-item {
   background: linear-gradient(145deg, #0d1b2e, #070f1e);
@@ -151,7 +266,7 @@ section > h2 {
   border: 1px solid rgba(251,191,36,0.25);
 }
 
-/* CONTACT */
+/* ─── CONTACT ─── */
 .contact-card {
   background: linear-gradient(145deg, #0d1b2e, #070f1e);
   border: 1px solid rgba(56,189,248,0.12);
@@ -164,17 +279,10 @@ section > h2 {
   padding: 13px 28px; border-radius: 12px; font-weight: 600; font-size: 15px;
   text-decoration: none; transition: all 0.25s;
 }
-.contact-btn.insta {
-  background: rgba(225,48,108,0.1); color: #f472b6;
-  border: 1px solid rgba(225,48,108,0.25);
-}
+.contact-btn.insta { background: rgba(225,48,108,0.1); color: #f472b6; border: 1px solid rgba(225,48,108,0.25); }
 .contact-btn.insta:hover { background: rgba(225,48,108,0.2); transform: translateY(-2px); }
-.contact-btn.tg {
-  background: rgba(56,189,248,0.1); color: #38bdf8;
-  border: 1px solid rgba(56,189,248,0.25);
-}
+.contact-btn.tg { background: rgba(56,189,248,0.1); color: #38bdf8; border: 1px solid rgba(56,189,248,0.25); }
 .contact-btn.tg:hover { background: rgba(56,189,248,0.2); transform: translateY(-2px); }
-
 
 footer {
   text-align: center; padding: 28px 20px;
@@ -186,6 +294,79 @@ footer span { color: #38bdf8; }
 </head>
 <body>
 
+<!-- ═══════════════════════════════════════════
+     LOADING OVERLAY
+════════════════════════════════════════════ -->
+<div id="loading-overlay">
+  <div class="loader-box">
+    <div class="loader-spinner"></div>
+    <p>جاري التحقق...</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     AUTH OVERLAY (Login / Register)
+════════════════════════════════════════════ -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div class="auth-logo">RA</div>
+    <h2>⚡ رعد الأسود</h2>
+    <p class="auth-sub">الموقع الشخصي — محمي بكلمة مرور</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">تسجيل الدخول</button>
+      <button class="auth-tab" onclick="switchTab('register')">إنشاء حساب</button>
+    </div>
+
+    <!-- Login Form -->
+    <div id="login-form" class="auth-form">
+      <div>
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="login-email" placeholder="example@email.com" />
+      </div>
+      <div>
+        <label>كلمة المرور</label>
+        <input type="password" id="login-pass" placeholder="••••••••" />
+      </div>
+      <button class="auth-btn" onclick="doLogin()">دخول</button>
+      <div id="login-msg" class="auth-msg"></div>
+    </div>
+
+    <!-- Register Form -->
+    <div id="register-form" class="auth-form" style="display:none">
+      <div>
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="reg-email" placeholder="example@email.com" />
+      </div>
+      <div>
+        <label>كلمة المرور</label>
+        <input type="password" id="reg-pass" placeholder="••••••••" />
+      </div>
+      <button class="auth-btn" onclick="doRegister()">إنشاء حساب</button>
+      <div id="reg-msg" class="auth-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PENDING APPROVAL OVERLAY
+════════════════════════════════════════════ -->
+<div id="pending-overlay">
+  <div class="pending-card">
+    <div class="pending-icon">⏳</div>
+    <h2>في انتظار الموافقة</h2>
+    <p>تم إنشاء حسابك بنجاح.<br>يرجى الانتظار حتى يقوم المشرف بالموافقة على طلبك.</p>
+    <br>
+    <p style="color:#475569; font-size:13px;">بعد الموافقة، سيتم تفعيل حسابك تلقائياً.</p>
+    <button class="pending-logout" onclick="doLogout()">تسجيل الخروج</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN WEBSITE CONTENT
+════════════════════════════════════════════ -->
+<div id="main-content">
+
 <!-- NAV -->
 <nav>
   <h1>⚡ رعد الأسود</h1>
@@ -195,6 +376,9 @@ footer span { color: #38bdf8; }
     <a href="#projects">المشاريع</a>
     <a href="#achievements">الإنجازات</a>
     <a href="#contact">تواصل</a>
+    <span class="nav-user" id="nav-user-email"></span>
+    <a href="admin.html" class="btn-admin" id="admin-link" style="display:none">⚙️ لوحة التحكم</a>
+    <a href="#" class="btn-logout" onclick="doLogout(); return false;">خروج</a>
   </div>
 </nav>
 
@@ -241,48 +425,42 @@ footer span { color: #38bdf8; }
   <div class="section-label">◈ الأعمال</div>
   <h2>المشاريع</h2>
   <div class="grid">
-
     <div class="card">
       <div class="card-icon">🏋️</div>
       <h3>نظام الجيم</h3>
       <p>نظام شخصي لتتبع التمارين والكورسات وتنظيم التدريب بشكل احترافي.</p>
       <a class="card-link" href="https://raadalaswed.github.io/newgym/" target="_blank" rel="noopener">دخول ←</a>
     </div>
-
     <div class="card">
       <div class="card-icon">🚗</div>
       <h3>نظام كراج</h3>
       <p>إدارة إدخال وإخراج السيارات مع تفاصيل كاملة والأجور.</p>
       <a class="card-link" href="https://raadalaswed.github.io/garage/" target="_blank" rel="noopener">دخول ←</a>
     </div>
-
     <div class="card">
       <div class="card-icon">📒</div>
       <h3>دفتر الديون</h3>
       <p>إدارة ديون الزبائن وتتبع الحسابات بسهولة ودقة.</p>
       <a class="card-link" href="https://raadalaswed.github.io/mangerr/" target="_blank" rel="noopener">دخول ←</a>
     </div>
-
     <div class="card">
       <div class="card-icon">💳</div>
       <h3>مصاريفي</h3>
       <p>تتبع المصاريف الشخصية وتحليل الميزانية بذكاء.</p>
       <a class="card-link" href="https://raadalaswed.github.io/abc/" target="_blank" rel="noopener">دخول ←</a>
     </div>
-
     <div class="card">
       <div class="card-icon">🎲</div>
       <h3>نظام الدومنة</h3>
       <p>تنظيم بطولات الدومنة وجدولة المباريات بين الفرق.</p>
       <a class="card-link" href="https://raadalaswed.github.io/do/" target="_blank" rel="noopener">دخول ←</a>
     </div>
- <div class="card">
+    <div class="card">
       <div class="card-icon">🎲</div>
       <h3>نظام مشاركة الشاشة</h3>
       <p>شارك شاشة او كاميرا هاتفك.</p>
       <a class="card-link" href="https://phone-mirror-production.up.railway.app/" target="_blank" rel="noopener">دخول ←</a>
     </div>
-    
   </div>
 </section>
 
@@ -291,7 +469,6 @@ footer span { color: #38bdf8; }
   <div class="section-label">◈ المسيرة</div>
   <h2>الخبرة والإنجازات</h2>
   <div class="achievement-list">
-
     <div class="achievement-item">
       <div class="ach-icon gold">♟️</div>
       <div class="ach-text">
@@ -300,7 +477,6 @@ footer span { color: #38bdf8; }
         <span class="ach-badge">🏆 بطل الجامعة</span>
       </div>
     </div>
-
     <div class="achievement-item">
       <div class="ach-icon gold">🥈</div>
       <div class="ach-text">
@@ -309,7 +485,6 @@ footer span { color: #38bdf8; }
         <span class="ach-badge">🇮🇶 المستوى الوطني</span>
       </div>
     </div>
-
     <div class="achievement-item">
       <div class="ach-icon blue">💼</div>
       <div class="ach-text">
@@ -317,7 +492,6 @@ footer span { color: #38bdf8; }
         <p>خبرة عملية في تنظيم العمليات المالية وإدارة الحسابات لمشاريع متعددة.</p>
       </div>
     </div>
-
     <div class="achievement-item">
       <div class="ach-icon blue">📣</div>
       <div class="ach-text">
@@ -325,7 +499,6 @@ footer span { color: #38bdf8; }
         <p>إدارة صفحات ومنصات التواصل الاجتماعي، وإنتاج محتوى مرئي احترافي بمهارات مونتاج الفيديو.</p>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -336,22 +509,179 @@ footer span { color: #38bdf8; }
   <div class="contact-card">
     <p>هل لديك مشروع أو فكرة؟ تواصل معي عبر المنصات التالية</p>
     <div class="contact-links">
-      <a class="contact-btn insta" href="https://instagram.com/raad_alaswed" target="_blank">
-        📷 Instagram
-      </a>
-      <a class="contact-btn tg" href="https://t.me/raad2a" target="_blank">
-        ✈️ Telegram
-      </a>
+      <a class="contact-btn insta" href="https://instagram.com/raad_alaswed" target="_blank">📷 Instagram</a>
+      <a class="contact-btn tg" href="https://t.me/raad2a" target="_blank">✈️ Telegram</a>
     </div>
   </div>
 </section>
 
 <footer>© 2026 — <span>رعد الأسود</span> · جميع الحقوق محفوظة</footer>
 
-<script>
-function smoothScroll(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-}
+</div><!-- end #main-content -->
+
+
+<!-- ═══════════════════════════════════════════
+     FIREBASE SDK
+════════════════════════════════════════════ -->
+<script type="module">
+  // ┌─────────────────────────────────────────────┐
+  // │         🔥 FIREBASE CONFIG                  │
+  // │  ضع إعدادات Firebase الخاصة بك هنا         │
+  // └─────────────────────────────────────────────┘
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ▼▼▼ ضع إعدادات مشروعك هنا ▼▼▼
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7EVNCSl48CQgIC_a8wdC5UG2tKLtNKjQ",
+    authDomain: "garag-system.firebaseapp.com",
+    databaseURL: "https://garag-system-default-rtdb.firebaseio.com",
+    projectId: "garag-system",
+    storageBucket: "garag-system.firebasestorage.app",
+    messagingSenderId: "330947022055",
+    appId: "1:330947022055:web:d0c9d378e200c7de45a642"
+  };
+  // ▲▲▲ انتهى مكان الإعدادات ▲▲▲
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ── UI helpers ──
+  const loadingEl  = document.getElementById('loading-overlay');
+  const authEl     = document.getElementById('auth-overlay');
+  const pendingEl  = document.getElementById('pending-overlay');
+  const mainEl     = document.getElementById('main-content');
+  const navEmail   = document.getElementById('nav-user-email');
+  const adminLink  = document.getElementById('admin-link');
+
+  function showLoading()  { loadingEl.classList.remove('hidden'); authEl.classList.remove('active'); pendingEl.classList.remove('active'); mainEl.classList.remove('visible'); }
+  function showAuth()     { loadingEl.classList.add('hidden');    authEl.classList.add('active');    pendingEl.classList.remove('active'); mainEl.classList.remove('visible'); }
+  function showPending()  { loadingEl.classList.add('hidden');    authEl.classList.remove('active'); pendingEl.classList.add('active');    mainEl.classList.remove('visible'); }
+  function showMain()     { loadingEl.classList.add('hidden');    authEl.classList.remove('active'); pendingEl.classList.remove('active'); mainEl.classList.add('visible'); }
+
+  function msg(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text; el.className = 'auth-msg ' + type;
+  }
+
+  // ── Auth state listener ──
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { showAuth(); return; }
+
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (!snap.exists()) { await signOut(auth); showAuth(); return; }
+
+    const data = snap.data();
+    if (!data.approved) { showPending(); return; }
+
+    // Approved — show site
+    navEmail.textContent = user.email;
+    if (data.role === 'admin') adminLink.style.display = 'inline-flex';
+    showMain();
+  });
+
+  // ── Login ──
+  window.doLogin = async function() {
+    const email = document.getElementById('login-email').value.trim();
+    const pass  = document.getElementById('login-pass').value;
+    if (!email || !pass) { msg('login-msg','يرجى ملء جميع الحقول','error'); return; }
+
+    const btn = document.querySelector('#login-form .auth-btn');
+    btn.disabled = true; btn.textContent = 'جاري الدخول...';
+
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, pass);
+      const snap = await getDoc(doc(db, 'users', cred.user.uid));
+      if (!snap.exists() || !snap.data().approved) {
+        await signOut(auth);
+        msg('login-msg','حسابك لم تتم الموافقة عليه بعد. يرجى الانتظار.','warning');
+        btn.disabled = false; btn.textContent = 'دخول'; return;
+      }
+      // success → onAuthStateChanged handles UI
+    } catch(e) {
+      const errors = {
+        'auth/user-not-found': 'البريد الإلكتروني غير موجود',
+        'auth/wrong-password': 'كلمة المرور غير صحيحة',
+        'auth/invalid-credential': 'بيانات الدخول غير صحيحة',
+        'auth/too-many-requests': 'تم تجاوز عدد المحاولات. حاول لاحقاً'
+      };
+      msg('login-msg', errors[e.code] || 'حدث خطأ: ' + e.message, 'error');
+      btn.disabled = false; btn.textContent = 'دخول';
+    }
+  };
+
+  // ── Register ──
+  window.doRegister = async function() {
+    const email = document.getElementById('reg-email').value.trim();
+    const pass  = document.getElementById('reg-pass').value;
+    if (!email || !pass) { msg('reg-msg','يرجى ملء جميع الحقول','error'); return; }
+    if (pass.length < 6)  { msg('reg-msg','كلمة المرور يجب أن تكون 6 أحرف على الأقل','error'); return; }
+
+    const btn = document.querySelector('#register-form .auth-btn');
+    btn.disabled = true; btn.textContent = 'جاري الإنشاء...';
+
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        email:    email,
+        role:     'user',
+        approved: false,
+        createdAt: new Date().toISOString()
+      });
+      await signOut(auth);
+      msg('reg-msg','✅ تم إنشاء الحساب! في انتظار موافقة المشرف.','success');
+      btn.disabled = false; btn.textContent = 'إنشاء حساب';
+    } catch(e) {
+      const errors = {
+        'auth/email-already-in-use': 'هذا البريد مسجل مسبقاً',
+        'auth/invalid-email': 'البريد الإلكتروني غير صالح',
+        'auth/weak-password': 'كلمة المرور ضعيفة جداً'
+      };
+      msg('reg-msg', errors[e.code] || 'حدث خطأ: ' + e.message, 'error');
+      btn.disabled = false; btn.textContent = 'إنشاء حساب';
+    }
+  };
+
+  // ── Logout ──
+  window.doLogout = async function() {
+    await signOut(auth);
+    showAuth();
+  };
+
+  // ── Tab switch ──
+  window.switchTab = function(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('login-form').style.display    = tab === 'login'    ? 'flex' : 'none';
+    document.getElementById('register-form').style.display = tab === 'register' ? 'flex' : 'none';
+    document.querySelectorAll('.auth-tab')[tab === 'login' ? 0 : 1].classList.add('active');
+    document.getElementById('login-msg').className = 'auth-msg';
+    document.getElementById('reg-msg').className   = 'auth-msg';
+  };
+
+  // ── Smooth scroll ──
+  window.smoothScroll = function(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Enter key on inputs
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    if (document.getElementById('login-form').style.display !== 'none') doLogin();
+    else doRegister();
+  });
 </script>
 </body>
 </html>
