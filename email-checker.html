@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فاحص تسريبات البريد — سايبر كيت</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #020c12;
+    --surface: #051520;
+    --panel: #081e2a;
+    --panel2: #0c2535;
+    --border: #0e3550;
+    --accent: #00d4ff;
+    --red: #ff3b6b;
+    --green: #00e676;
+    --yellow: #ffd740;
+    --text: #bdd8ea;
+    --muted: #3d6a80;
+    --font: 'Tajawal', sans-serif;
+    --font2: 'Cairo', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    direction: rtl;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 45px 45px;
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed; top: -150px; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 500px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.07) 0%, transparent 65%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  /* ─── شريط التنقل ─── */
+  nav {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 44px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--font2);
+    font-size: 20px; font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(0,212,255,0.4);
+    letter-spacing: 1px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-links { margin-right: auto; display: flex; gap: 6px; }
+  .nav-links a {
+    font-size: 13px; font-weight: 500;
+    color: var(--muted); text-decoration: none;
+    padding: 6px 14px; border-radius: 20px;
+    border: 1px solid transparent;
+    transition: all .2s;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--accent);
+    border-color: rgba(0,212,255,0.3);
+    background: rgba(0,212,255,0.06);
+  }
+
+  /* ─── بطاقة الشرح ─── */
+  .intro-card {
+    background: linear-gradient(135deg, rgba(0,212,255,0.07), rgba(0,212,255,0.02));
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .intro-icon {
+    font-size: 38px; flex-shrink: 0;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 12px;
+    width: 64px; height: 64px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .intro-text h1 {
+    font-family: var(--font2);
+    font-size: 22px; font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 0 18px rgba(0,212,255,0.35);
+    margin-bottom: 8px;
+  }
+  .intro-text p {
+    font-size: 14px; line-height: 1.9;
+    color: var(--text); opacity: 0.85;
+  }
+  .intro-text .why-box {
+    margin-top: 14px;
+    background: rgba(0,0,0,0.3);
+    border-right: 3px solid var(--yellow);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    font-size: 13px; line-height: 1.8;
+    color: var(--text); opacity: 0.9;
+  }
+  .why-box strong { color: var(--yellow); display: block; margin-bottom: 4px; font-size: 13px; }
+
+  /* ─── خطوات الاستخدام ─── */
+  .steps-row {
+    display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .step {
+    flex: 1; min-width: 160px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .step-num {
+    background: rgba(0,212,255,0.15);
+    color: var(--accent);
+    font-family: var(--font2);
+    font-size: 14px; font-weight: 700;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-text { font-size: 12px; line-height: 1.7; color: var(--text); }
+  .step-text b { color: var(--accent); display: block; font-size: 12px; margin-bottom: 2px; }
+
+  /* ─── البطاقة الرئيسية ─── */
+  .main-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    margin-bottom: 20px;
+  }
+  .card-header {
+    background: linear-gradient(135deg, var(--panel2), var(--panel));
+    border-bottom: 1px solid var(--border);
+    padding: 18px 28px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-header h2 {
+    font-family: var(--font2);
+    font-size: 16px; font-weight: 700;
+    color: var(--text);
+  }
+  .card-header .badge {
+    margin-right: auto;
+    font-size: 11px;
+    background: rgba(0,212,255,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 20px;
+    padding: 3px 12px;
+  }
+  .card-body { padding: 28px; }
+
+  /* ─── حقل المفتاح ─── */
+  .api-key-section {
+    background: rgba(255,215,64,0.04);
+    border: 1px solid rgba(255,215,64,0.2);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 22px;
+  }
+  .api-key-section .section-label {
+    font-size: 13px; font-weight: 700;
+    color: var(--yellow); margin-bottom: 4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .api-key-section .section-hint {
+    font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.7;
+  }
+  .api-key-section .section-hint a { color: var(--accent); }
+
+  .input-row { display: flex; gap: 10px; }
+  input[type="password"], input[type="email"], input[type="text"] {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 16px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .25s, box-shadow .25s;
+    direction: ltr; text-align: left;
+  }
+  input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+  }
+  input::placeholder { color: var(--muted); font-family: var(--font); direction: rtl; text-align: right; }
+
+  .btn {
+    border-radius: 8px;
+    font-family: var(--font2);
+    font-size: 13px; font-weight: 700;
+    padding: 11px 20px; cursor: pointer;
+    transition: all .2s; white-space: nowrap; border: none;
+  }
+  .btn-save {
+    background: rgba(255,215,64,0.1);
+    border: 1px solid rgba(255,215,64,0.3) !important;
+    color: var(--yellow);
+  }
+  .btn-save:hover { background: rgba(255,215,64,0.2); }
+  .btn-scan {
+    background: linear-gradient(135deg, #003d55, #0072a0);
+    border: 1px solid var(--accent) !important;
+    color: var(--accent);
+    font-size: 15px; padding: 13px 32px;
+    box-shadow: 0 0 18px rgba(0,212,255,0.25);
+    width: 100%;
+    margin-top: 14px;
+  }
+  .btn-scan:hover {
+    background: linear-gradient(135deg, #005470, #0099cc);
+    box-shadow: 0 0 28px rgba(0,212,255,0.45);
+    transform: translateY(-1px);
+  }
+  .btn-scan:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* Email input area */
+  .email-area { margin-bottom: 4px; }
+  .email-label {
+    font-size: 13px; font-weight: 600;
+    color: var(--text); margin-bottom: 8px; display: block;
+  }
+  .email-input-wrap { position: relative; }
+  .email-input-wrap input { width: 100%; }
+
+  /* ─── تحميل ─── */
+  .loading { display: none; text-align: center; padding: 44px 0; }
+  .loading.show { display: block; }
+  .loader-ring {
+    width: 56px; height: 56px; margin: 0 auto 18px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    box-shadow: 0 0 16px rgba(0,212,255,0.3);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading p { font-size: 14px; color: var(--accent); animation: pulse 1.3s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ─── النتائج ─── */
+  #results { margin-top: 24px; }
+
+  .result-safe {
+    background: rgba(0,230,118,0.05);
+    border: 1px solid rgba(0,230,118,0.3);
+    border-radius: 12px; padding: 22px 26px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .result-icon {
+    width: 54px; height: 54px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .icon-safe  { background: rgba(0,230,118,0.12); box-shadow: 0 0 18px rgba(0,230,118,0.3); }
+  .icon-alert { background: rgba(255,59,107,0.12); box-shadow: 0 0 18px rgba(255,59,107,0.3); }
+  .result-info h3 { font-family: var(--font2); font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  .result-info p  { font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .h3-safe  { color: var(--green); }
+  .h3-alert { color: var(--red); }
+
+  .breach-section-title {
+    font-family: var(--font2); font-size: 13px; font-weight: 700;
+    letter-spacing: 1px; color: var(--muted);
+    margin: 26px 0 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .count-badge {
+    background: var(--red); color: #fff;
+    font-size: 11px; padding: 2px 10px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(255,59,107,0.4);
+  }
+
+  .breach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 12px;
+  }
+  .breach-card {
+    background: var(--surface);
+    border: 1px solid rgba(255,59,107,0.2);
+    border-radius: 10px; padding: 14px 16px;
+    transition: border-color .2s, transform .2s;
+    animation: fadeUp .4s ease both;
+    cursor: default;
+  }
+  .breach-card:hover { border-color: var(--red); transform: translateY(-3px); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .breach-card-name {
+    font-family: var(--font2); font-size: 14px;
+    font-weight: 700; color: var(--text); margin-bottom: 5px;
+  }
+  .breach-card-date { font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+  .breach-card-count { font-size: 12px; color: var(--muted); margin-bottom: 7px; }
+  .breach-card-types {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;
+  }
+  .type-tag {
+    font-size: 10px;
+    background: rgba(255,59,107,0.12);
+    color: #ff8fa8;
+    border: 1px solid rgba(255,59,107,0.25);
+    border-radius: 4px; padding: 2px 7px;
+  }
+
+  .error-box {
+    background: rgba(255,59,107,0.06);
+    border: 1px solid rgba(255,59,107,0.3);
+    border-radius: 10px; padding: 16px 20px;
+    font-size: 13px; color: #ff8fa8;
+    display: flex; align-items: flex-start; gap: 12px; line-height: 1.7;
+  }
+  .error-box span:first-child { font-size: 20px; flex-shrink: 0; }
+
+  /* ─── مربع تعليمي ─── */
+  .info-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px 26px;
+    margin-top: 20px;
+  }
+  .info-box h3 {
+    font-family: var(--font2); font-size: 15px; font-weight: 800;
+    color: var(--accent); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tip-list { display: flex; flex-direction: column; gap: 10px; }
+  .tip-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13px; line-height: 1.75; color: var(--text);
+  }
+  .tip-icon { color: var(--green); flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+
+  footer {
+    margin-top: 50px; text-align: center;
+    font-size: 12px; color: var(--muted); opacity: 0.6; line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- التنقل -->
+  <nav>
+    <div class="nav-logo">🛡️ سايبر كيت</div>
+    <div class="nav-links">
+      <a href="email-checker.html" class="active">📧 فاحص البريد</a>
+      <a href="ip-analyzer.html">🌐 محلل IP</a>
+      <a href="security-lab.html">🔬 مختبر الأمان</a>
+    </div>
+  </nav>
+
+  <!-- بطاقة الشرح -->
+  <div class="intro-card">
+    <div class="intro-icon">📧</div>
+    <div class="intro-text">
+      <h1>فاحص تسريبات البريد الإلكتروني</h1>
+      <p>
+        هذه الأداة تتحقق مما إذا كان بريدك الإلكتروني قد ظهر في أي تسريب بيانات معروف.
+        عندما تتعرّض شركة أو موقع للاختراق، تُسرَّب بيانات المستخدمين (كلمات مرور، إيميلات) على الإنترنت المظلم.
+      </p>
+      <div class="why-box">
+        <strong>💡 لماذا هذا مهم؟</strong>
+        إذا تسرّب إيميلك وكلمة مرورك في اختراق قديم، فقد يستخدمها أحدهم للدخول لحساباتك الأخرى — خاصةً إذا كنت تستخدم نفس كلمة المرور في أكثر من موقع. هذا الفحص يُنبّهك لتغيير كلمات المرور فوراً قبل أن يستغلها أحد.
+      </div>
+    </div>
+  </div>
+
+  <!-- خطوات الاستخدام -->
+  <div class="steps-row">
+    <div class="step">
+      <div class="step-num">١</div>
+      <div class="step-text"><b>احصل على مفتاح API</b>اذهب لموقع haveibeenpwned.com/API/Key وسجّل للحصول على مفتاح مجاني</div>
+    </div>
+    <div class="step">
+      <div class="step-num">٢</div>
+      <div class="step-text"><b>أدخل المفتاح</b>الصق مفتاح الـ API في الحقل أدناه واضغط حفظ (يُحفظ في متصفحك فقط)</div>
+    </div>
+    <div class="step">
+      <div class="step-num">٣</div>
+      <div class="step-text"><b>افحص بريدك</b>أدخل أي إيميل تريد فحصه واضغط "فحص الآن" لرؤية النتائج الحقيقية</div>
+    </div>
+  </div>
+
+  <!-- البطاقة الرئيسية -->
+  <div class="main-card">
+    <div class="card-header">
+      <span>🔍</span>
+      <h2>فحص التسريبات</h2>
+      <span class="badge">بيانات حقيقية · HIBP API v3</span>
+    </div>
+    <div class="card-body">
+
+      <!-- مفتاح API -->
+      <div class="api-key-section">
+        <div class="section-label">🔑 مفتاح API (مطلوب)</div>
+        <div class="section-hint">
+          احصل على مفتاح مجاني من
+          <a href="https://haveibeenpwned.com/API/Key" target="_blank">haveibeenpwned.com/API/Key</a>
+          — تُحفظ بيانات مفتاحك في متصفحك فقط ولا تُرسل لأي مكان آخر.
+        </div>
+        <div class="input-row">
+          <input type="password" id="apiKeyInput" placeholder="الصق مفتاح HIBP هنا...">
+          <button class="btn btn-save" onclick="saveKey()">💾 حفظ</button>
+        </div>
+      </div>
+
+      <!-- حقل الإيميل -->
+      <div class="email-area">
+        <label class="email-label">📧 البريد الإلكتروني المراد فحصه</label>
+        <div class="email-input-wrap">
+          <input type="email" id="emailInput" placeholder="example@gmail.com">
+        </div>
+      </div>
+
+      <button class="btn btn-scan" id="scanBtn" onclick="checkBreach()">
+        🔍 فحص الآن
+      </button>
+
+      <!-- تحميل -->
+      <div class="loading" id="loading">
+        <div class="loader-ring"></div>
+        <p>جاري البحث في قاعدة بيانات التسريبات...</p>
+      </div>
+
+      <!-- نتائج -->
+      <div id="results"></div>
+    </div>
+  </div>
+
+  <!-- نصائح -->
+  <div class="info-box">
+    <h3>🛡️ ماذا تفعل إذا وجدت تسريباً؟</h3>
+    <div class="tip-list">
+      <div class="tip-item"><span class="tip-icon">✅</span><span>غيّر كلمة مرورك في الموقع المتضرر فوراً، وفي أي موقع آخر تستخدم فيه نفس كلمة المرور.</span></div>
+      <div class="tip-item"><span class="tip-icon">✅</span><span>فعّل التحقق الثنائي (2FA) — حتى لو عرف أحدهم كلمة مرورك، لن يستطيع الدخول بدون هاتفك.</span></div>
+      <div class="tip-item"><span class="tip-icon">✅</span><span>استخدم كلمة مرور مختلفة لكل موقع. ننصح باستخدام مدير كلمات المرور مثل Bitwarden أو 1Password.</span></div>
+      <div class="tip-item"><span class="tip-icon">✅</span><span>لا تتجاهل التسريبات القديمة — كلمات المرور القديمة تُباع وتُستخدم لسنوات في هجمات "حشو الاعتمادات".</span></div>
+    </div>
+  </div>
+
+  <footer>
+    سايبر كيت · للتعليم والتوعية الأمنية فقط · مصدر البيانات: HaveIBeenPwned.com
+  </footer>
+</div>
+
+<script>
+  let HIBP_KEY = localStorage.getItem('hibp_key') || '';
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (HIBP_KEY) document.getElementById('apiKeyInput').value = HIBP_KEY;
+    document.getElementById('emailInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkBreach();
+    });
+  });
+
+  function saveKey() {
+    const k = document.getElementById('apiKeyInput').value.trim();
+    if (!k) { showError('الرجاء إدخال مفتاح API أولاً.'); return; }
+    HIBP_KEY = k;
+    localStorage.setItem('hibp_key', k);
+    const btn = document.querySelector('.btn-save');
+    btn.textContent = '✅ تم الحفظ';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = '💾 حفظ'; btn.style.color = ''; }, 2500);
+  }
+
+  async function checkBreach() {
+    const email = document.getElementById('emailInput').value.trim();
+    if (!email) { showError('الرجاء إدخال بريد إلكتروني.'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError('صيغة البريد الإلكتروني غير صحيحة. مثال صحيح: user@gmail.com'); return;
+    }
+    if (!HIBP_KEY) {
+      showError('مفتاح API مطلوب. احصل على مفتاح مجاني من haveibeenpwned.com/API/Key ثم أدخله أعلاه.');
+      return;
+    }
+
+    document.getElementById('results').innerHTML = '';
+    document.getElementById('loading').classList.add('show');
+    document.getElementById('scanBtn').disabled = true;
+
+    try {
+      const res = await fetch(
+        `https://haveibeenpwned.com/api/v3/breachedaccount/${encodeURIComponent(email)}?truncateResponse=false`,
+        { headers: { 'hibp-api-key': HIBP_KEY, 'user-agent': 'CyberKit-AR' } }
+      );
+
+      document.getElementById('loading').classList.remove('show');
+      document.getElementById('scanBtn').disabled = false;
+
+      if (res.status === 404) renderSafe(email);
+      else if (res.status === 200) renderBreached(email, await res.json());
+      else if (res.status === 401) showError('مفتاح API غير صحيح. تحقق من مفتاحك وحاول مجدداً.');
+      else if (res.status === 403) showError('هذه الميزة تتطلب اشتراكاً مدفوعاً في HIBP لفحص حسابات بعينها.');
+      else if (res.status === 429) showError('تجاوزت حد الطلبات. انتظر لحظة ثم حاول مجدداً.');
+      else showError(`خطأ من الخادم: كود ${res.status}. حاول مجدداً لاحقاً.`);
+    } catch (err) {
+      document.getElementById('loading').classList.remove('show');
+      document.getElementById('scanBtn').disabled = false;
+      if (err.message.includes('fetch') || err.message.includes('Failed')) {
+        showError('خطأ في الشبكة: يجب تشغيل هذه الصفحة عبر خادم HTTP (مثل VS Code Live Server أو GitHub Pages) وليس مباشرةً من الملف.');
+      } else {
+        showError('حدث خطأ: ' + err.message);
+      }
+    }
+  }
+
+  function renderSafe(email) {
+    document.getElementById('results').innerHTML = `
+      <div class="result-safe">
+        <div class="result-icon icon-safe">✅</div>
+        <div class="result-info">
+          <h3 class="h3-safe">لا توجد تسريبات!</h3>
+          <p>لم يُعثر على <strong>${esc(email)}</strong> في أي تسريب بيانات معروف.<br>
+          هذا جيد! لكن استمر في استخدام كلمات مرور قوية وفريدة لكل موقع.</p>
+        </div>
+      </div>`;
+  }
+
+  function renderBreached(email, data) {
+    const c = data.length;
+    const items = data.map((b, i) => `
+      <div class="breach-card" style="animation-delay:${i*0.05}s">
+        <div class="breach-card-name">🔓 ${esc(b.Name)}</div>
+        <div class="breach-card-date">📅 تاريخ الاختراق: ${b.BreachDate || 'غير معروف'}</div>
+        <div class="breach-card-count">👥 حسابات مسرَّبة: ${b.PwnCount ? b.PwnCount.toLocaleString('ar') : '؟'}</div>
+        ${b.DataClasses ? `<div class="breach-card-types">${b.DataClasses.slice(0,4).map(t=>`<span class="type-tag">${esc(t)}</span>`).join('')}</div>` : ''}
+      </div>`).join('');
+
+    document.getElementById('results').innerHTML = `
+      <div class="result-safe" style="background:rgba(255,59,107,0.05);border-color:rgba(255,59,107,0.3)">
+        <div class="result-icon icon-alert">🚨</div>
+        <div class="result-info">
+          <h3 class="h3-alert">تمّ العثور على ${c} تسريب${c > 1 ? 'ات' : ''}!</h3>
+          <p>ظهر بريد <strong>${esc(email)}</strong> في ${c} عملية اختراق بيانات.<br>
+          يُنصح بتغيير كلمة مرورك في هذه المواقع فوراً وتفعيل التحقق الثنائي.</p>
+        </div>
+      </div>
+      <div class="breach-section-title">
+        مصادر التسريبات المكتشفة
+        <span class="count-badge">${c} مصدر</span>
+      </div>
+      <div class="breach-grid">${items}</div>`;
+  }
+
+  function showError(msg) {
+    document.getElementById('results').innerHTML = `
+      <div class="error-box">
+        <span>⚠️</span><span>${esc(msg)}</span>
+      </div>`;
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c =>
+      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+</script>
+</body>
+</html>
