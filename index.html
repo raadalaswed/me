@@ -941,6 +941,7 @@ footer span { color: var(--c-accent); }
   <a href="#projects"     onclick="closeMobile()">المشاريع</a>
   <a href="#achievements" onclick="closeMobile()">الإنجازات</a>
   <a href="#contact"      onclick="closeMobile()">تواصل</a>
+  <a href="admin.html" id="mobile-admin-link" onclick="closeMobile()" style="display:none; color:#fbbf24; border-color:rgba(251,191,36,0.2);">⚙️ لوحة التحكم</a>
   <a href="#" onclick="doLogout(); closeMobile(); return false;" style="color:#f87171; border-color:rgba(239,68,68,0.2);">خروج</a>
 </div>
 
@@ -1022,10 +1023,10 @@ footer span { color: var(--c-accent); }
       <a class="card-link" href="https://raadalaswed.github.io/do/" target="_blank" rel="noopener">دخول ←</a>
     </div>
     <div class="card reveal reveal-delay-3 reveal-scale">
-      <div class="card-icon">🎲</div>
-      <h3>نظام مشاركة الشاشة</h3>
-      <p>شارك شاشة او كاميرا هاتفك.</p>
-      <a class="card-link" href="https://phone-mirror-production.up.railway.app/" target="_blank" rel="noopener">دخول ←</a>
+      <div class="card-icon">🪪</div>
+      <h3>منشئ الملف الشخصي</h3>
+      <p>أنشئ صفحة شخصية احترافية لعرض مهاراتك ومشاريعك ووسائل التواصل الخاصة بك، واحصل على رابط وQR Code لمشاركتها بسهولة.</p>
+      <a class="card-link" href="https://raadalaswed.github.io/PortfolioBuilder/" target="_blank" rel="noopener">دخول ←</a>
     </div>
   </div>
 </section>
@@ -1180,7 +1181,11 @@ footer span { color: var(--c-accent); }
     const data = snap.data();
     if (!data.approved) { showPending(); return; }
     navEmail.textContent = user.email;
-    if (data.role === 'admin') adminLink.style.display = 'inline-flex';
+    if (data.role === 'admin') {
+      adminLink.style.display = 'inline-flex';
+      const mobileAdmin = document.getElementById('mobile-admin-link');
+      if (mobileAdmin) mobileAdmin.style.display = 'block';
+    }
     showMain();
   });
 
