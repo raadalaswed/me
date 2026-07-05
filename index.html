@@ -147,174 +147,9 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 }
 
 /* ─────────────────────────────────────────────
-   LOADING OVERLAY
-───────────────────────────────────────────── */
-#loading-overlay {
-  position: fixed; inset: 0;
-  background: var(--c-bg);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 9999; transition: opacity 0.4s;
-}
-#loading-overlay.hidden { opacity: 0; pointer-events: none; }
-.loader-box { text-align: center; }
-.loader-spinner {
-  width: 48px; height: 48px;
-  border: 3px solid rgba(56,189,248,0.12);
-  border-top-color: var(--c-accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 18px;
-  box-shadow: 0 0 20px rgba(56,189,248,0.3);
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.loader-box p {
-  color: var(--c-accent); font-size: 12px; letter-spacing: 3px;
-  font-family: var(--font-mono);
-}
-
-/* ─────────────────────────────────────────────
-   AUTH OVERLAY
-───────────────────────────────────────────── */
-#auth-overlay {
-  position: fixed; inset: 0;
-  background: radial-gradient(ellipse at 50% 40%, rgba(56,189,248,0.05) 0%, transparent 65%), var(--c-bg);
-  display: none; align-items: center; justify-content: center;
-  z-index: 5000; padding: 20px;
-}
-#auth-overlay.active { display: flex; }
-
-.auth-card {
-  background: linear-gradient(145deg, #0f1e38 0%, #070f1e 100%);
-  border: 1px solid rgba(56,189,248,0.22);
-  border-radius: 24px; padding: 44px 40px;
-  width: 100%; max-width: 440px;
-  box-shadow: 0 0 80px rgba(56,189,248,0.08), inset 0 1px 0 rgba(56,189,248,0.1), var(--shadow-card);
-  position: relative; overflow: hidden;
-  animation: authIn 0.5s cubic-bezier(0.4,0,0.2,1) both;
-}
-@keyframes authIn { from { opacity: 0; transform: translateY(16px) scale(0.98); } }
-.auth-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--c-accent), transparent);
-}
-
-.auth-logo {
-  width: 64px; height: 64px; border-radius: 50%;
-  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; font-weight: 700; color: var(--c-bg);
-  font-family: var(--font-mono);
-  margin: 0 auto 20px;
-  box-shadow: 0 0 30px rgba(56,189,248,0.4);
-  position: relative;
-}
-.auth-logo::after {
-  content: '';
-  position: absolute; inset: -4px; border-radius: 50%;
-  border: 1px solid rgba(56,189,248,0.4);
-  border-top-color: transparent; border-left-color: transparent;
-  animation: rotateBorder 4s linear infinite;
-}
-@keyframes rotateBorder { to { transform: rotate(360deg); } }
-
-.auth-card h2 { text-align: center; color: #f1f5f9; font-size: 22px; margin-bottom: 6px; }
-.auth-card .auth-sub { text-align: center; color: var(--c-text3); font-size: 14px; margin-bottom: 28px; }
-
-.auth-tabs {
-  display: flex; margin-bottom: 28px; border-radius: 10px;
-  overflow: hidden; border: 1px solid rgba(56,189,248,0.18);
-}
-.auth-tab {
-  flex: 1; padding: 10px; text-align: center; cursor: pointer;
-  font-size: 14px; font-weight: 600; color: var(--c-text3);
-  background: transparent; border: none; transition: var(--trans);
-  font-family: var(--font-main);
-}
-.auth-tab.active { background: rgba(56,189,248,0.15); color: var(--c-accent); }
-.auth-tab:hover:not(.active) { background: rgba(56,189,248,0.07); color: var(--c-text2); }
-
-.auth-form { display: flex; flex-direction: column; gap: 14px; }
-.auth-form label { font-size: 13px; color: var(--c-text2); margin-bottom: 4px; display: block; }
-
-.input-wrap { position: relative; }
-.auth-form input {
-  width: 100%; padding: 12px 16px;
-  background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.18);
-  border-radius: var(--radius-sm); color: #f1f5f9; font-size: 14px;
-  outline: none; transition: var(--trans);
-  font-family: var(--font-main);
-}
-.auth-form input[type="password"], .auth-form input[data-pass] { padding-left: 44px; }
-.auth-form input:focus { border-color: rgba(56,189,248,0.5); background: rgba(56,189,248,0.09); box-shadow: 0 0 0 3px rgba(56,189,248,0.08); }
-.auth-form input::placeholder { color: #334155; }
-
-.pass-toggle {
-  position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
-  background: none; border: none; cursor: pointer;
-  color: var(--c-text3); font-size: 16px; padding: 6px; line-height: 1;
-  transition: var(--trans); border-radius: 6px;
-}
-.pass-toggle:hover { color: var(--c-accent); }
-
-.auth-btn {
-  width: 100%; padding: 13px; background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-  color: var(--c-bg); border: none; border-radius: var(--radius-sm);
-  font-size: 15px; font-weight: 700; cursor: pointer; transition: var(--trans); margin-top: 6px;
-  font-family: var(--font-main);
-}
-.auth-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(56,189,248,0.35); }
-.auth-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-.auth-msg {
-  text-align: center; font-size: 13px; padding: 10px 14px;
-  border-radius: 8px; margin-top: 8px; display: none;
-}
-.auth-msg.error   { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); display: block; }
-.auth-msg.success { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); display: block; }
-.auth-msg.warning { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); display: block; }
-
-.auth-hint {
-  text-align: center; color: #334155; font-size: 12px; margin-top: 18px;
-  font-family: var(--font-mono); letter-spacing: 0.5px;
-}
-
-/* ─────────────────────────────────────────────
-   PENDING OVERLAY
-───────────────────────────────────────────── */
-#pending-overlay {
-  position: fixed; inset: 0;
-  background: radial-gradient(ellipse at 50% 40%, rgba(251,191,36,0.04) 0%, transparent 65%), var(--c-bg);
-  display: none; align-items: center; justify-content: center;
-  z-index: 5000; padding: 20px;
-}
-#pending-overlay.active { display: flex; }
-
-.pending-card {
-  background: linear-gradient(145deg, #1a150a, #070f1e);
-  border: 1px solid rgba(251,191,36,0.2);
-  border-radius: 24px; padding: 48px 40px; text-align: center;
-  max-width: 440px; width: 100%;
-  box-shadow: 0 0 60px rgba(251,191,36,0.05), var(--shadow-card);
-}
-.pending-icon { font-size: 54px; margin-bottom: 20px; animation: pendingPulse 2s ease-in-out infinite; }
-@keyframes pendingPulse { 50% { transform: scale(1.1); } }
-.pending-card h2 { color: var(--c-gold); font-size: 22px; margin-bottom: 12px; }
-.pending-card p { color: var(--c-text3); font-size: 15px; line-height: 1.7; }
-.pending-logout {
-  margin-top: 28px; padding: 11px 28px;
-  background: transparent; color: #f87171;
-  border: 1px solid rgba(239,68,68,0.3); border-radius: var(--radius-sm);
-  cursor: pointer; font-size: 14px; font-weight: 600; transition: var(--trans);
-  font-family: var(--font-main);
-}
-.pending-logout:hover { background: rgba(239,68,68,0.1); transform: translateY(-2px); }
-
-/* ─────────────────────────────────────────────
    MAIN / NAV
 ───────────────────────────────────────────── */
-#main-content { display: none; position: relative; z-index: 1; }
-#main-content.visible { display: block; }
+#main-content { display: block; position: relative; z-index: 1; }
 
 nav {
   position: fixed; width: 100%; top: 0;
@@ -347,15 +182,6 @@ nav a:hover, nav a.active-link {
   background: rgba(56,189,248,0.12); color: var(--c-accent);
   border-color: rgba(56,189,248,0.28);
 }
-.nav-user {
-  color: var(--c-text3); font-size: 11.5px; padding: 7px 10px;
-  white-space: nowrap; font-family: var(--font-mono);
-  max-width: 180px; overflow: hidden; text-overflow: ellipsis;
-}
-.btn-logout { color: #f87171 !important; border-color: rgba(239,68,68,0.22) !important; }
-.btn-logout:hover { background: rgba(239,68,68,0.1) !important; border-color: rgba(239,68,68,0.4) !important; }
-.btn-admin { color: var(--c-gold) !important; border-color: rgba(251,191,36,0.22) !important; }
-.btn-admin:hover { background: rgba(251,191,36,0.1) !important; }
 
 .nav-hamburger {
   display: none; flex-direction: column; gap: 5px;
@@ -875,8 +701,6 @@ footer span { color: var(--c-accent); }
   section { padding: 60px 16px; }
   section > h2 { font-size: 22px; }
   .contact-card { padding: 32px 20px; }
-  .auth-card { padding: 32px 24px; }
-  .pending-card { padding: 36px 24px; }
   nav h1 { font-size: 15px; }
   .btn-primary, .btn-outline { padding: 11px 22px; font-size: 14px; }
   .contact-btn { padding: 12px 22px; font-size: 14px; }
@@ -914,74 +738,6 @@ footer span { color: var(--c-accent); }
   <div class="glow-blob" style="width:400px;height:400px;background:radial-gradient(circle,rgba(14,165,233,0.08),transparent 70%);bottom:0;right:0;--dur:18s;"></div>
 </div>
 
-<!-- ─── LOADING OVERLAY ─── -->
-<div id="loading-overlay">
-  <div class="loader-box">
-    <div class="loader-spinner"></div>
-    <p>AUTHENTICATING...</p>
-  </div>
-</div>
-
-<!-- ─── AUTH OVERLAY ─── -->
-<div id="auth-overlay">
-  <div class="auth-card">
-    <div class="auth-logo">RA</div>
-    <h2>⚡ رعد الأسود</h2>
-    <p class="auth-sub">الموقع الشخصي — الدخول للأعضاء الموافق عليهم</p>
-
-    <div class="auth-tabs" role="tablist">
-      <button class="auth-tab active" onclick="switchTab('login')">تسجيل الدخول</button>
-      <button class="auth-tab" onclick="switchTab('register')">إنشاء حساب</button>
-    </div>
-
-    <div id="login-form" class="auth-form">
-      <div>
-        <label for="login-email">البريد الإلكتروني</label>
-        <input type="email" id="login-email" placeholder="example@email.com" autocomplete="email" />
-      </div>
-      <div>
-        <label for="login-pass">كلمة المرور</label>
-        <div class="input-wrap">
-          <input type="password" id="login-pass" data-pass placeholder="••••••••" autocomplete="current-password" />
-          <button type="button" class="pass-toggle" onclick="togglePass('login-pass', this)" aria-label="إظهار كلمة المرور">👁</button>
-        </div>
-      </div>
-      <button class="auth-btn" onclick="doLogin()">دخول</button>
-      <div id="login-msg" class="auth-msg" role="alert"></div>
-    </div>
-
-    <div id="register-form" class="auth-form" style="display:none">
-      <div>
-        <label for="reg-email">البريد الإلكتروني</label>
-        <input type="email" id="reg-email" placeholder="example@email.com" autocomplete="email" />
-      </div>
-      <div>
-        <label for="reg-pass">كلمة المرور</label>
-        <div class="input-wrap">
-          <input type="password" id="reg-pass" data-pass placeholder="6 أحرف على الأقل" autocomplete="new-password" />
-          <button type="button" class="pass-toggle" onclick="togglePass('reg-pass', this)" aria-label="إظهار كلمة المرور">👁</button>
-        </div>
-      </div>
-      <button class="auth-btn" onclick="doRegister()">إنشاء حساب</button>
-      <div id="reg-msg" class="auth-msg" role="alert"></div>
-    </div>
-
-    <p class="auth-hint">// secured session · approval required</p>
-  </div>
-</div>
-
-<!-- ─── PENDING OVERLAY ─── -->
-<div id="pending-overlay">
-  <div class="pending-card">
-    <div class="pending-icon">⏳</div>
-    <h2>في انتظار الموافقة</h2>
-    <p>تم إنشاء حسابك بنجاح.<br>يرجى الانتظار حتى يقوم المشرف بالموافقة على طلبك.</p>
-    <br>
-    <p style="color:#475569; font-size:13px;">بعد الموافقة، سيتم تفعيل حسابك تلقائياً.</p>
-    <button class="pending-logout" onclick="doLogout()">تسجيل الخروج</button>
-  </div>
-</div>
-
 <!-- ─── MAIN CONTENT ─── -->
 <div id="main-content">
 
@@ -995,9 +751,6 @@ footer span { color: var(--c-accent); }
     <a href="#cyber-tools"  data-section="cyber-tools">الأدوات</a>
     <a href="#achievements" data-section="achievements">الإنجازات</a>
     <a href="#contact"      data-section="contact">تواصل</a>
-    <span class="nav-user" id="nav-user-email"></span>
-    <a href="admin.html" class="btn-admin" id="admin-link" style="display:none">⚙️ لوحة التحكم</a>
-    <a href="#" class="btn-logout" onclick="doLogout(); return false;">خروج</a>
   </div>
   <button class="nav-hamburger" id="hamburger" aria-label="القائمة" aria-expanded="false">
     <span></span><span></span><span></span>
@@ -1012,8 +765,6 @@ footer span { color: var(--c-accent); }
   <a href="#cyber-tools"  onclick="closeMobile()">الأدوات</a>
   <a href="#achievements" onclick="closeMobile()">الإنجازات</a>
   <a href="#contact"      onclick="closeMobile()">تواصل</a>
-  <a href="admin.html" id="mobile-admin-link" onclick="closeMobile()" style="display:none; color:#fbbf24; border-color:rgba(251,191,36,0.2);">⚙️ لوحة التحكم</a>
-  <a href="#" onclick="doLogout(); closeMobile(); return false;" style="color:#f87171; border-color:rgba(239,68,68,0.2);">خروج</a>
 </div>
 
 <!-- HERO -->
@@ -1275,162 +1026,8 @@ footer span { color: var(--c-accent); }
 
 </div><!-- end #main-content -->
 
-
-<!-- ─── FIREBASE SDK (بدون أي تغيير على منطق قاعدة البيانات) ─── -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    setDoc,
-    getDoc
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyC7EVNCSl48CQgIC_a8wdC5UG2tKLtNKjQ",
-    authDomain: "garag-system.firebaseapp.com",
-    databaseURL: "https://garag-system-default-rtdb.firebaseio.com",
-    projectId: "garag-system",
-    storageBucket: "garag-system.firebasestorage.app",
-    messagingSenderId: "330947022055",
-    appId: "1:330947022055:web:d0c9d378e200c7de45a642"
-  };
-
-  const app  = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
-
-  const loadingEl = document.getElementById('loading-overlay');
-  const authEl    = document.getElementById('auth-overlay');
-  const pendingEl = document.getElementById('pending-overlay');
-  const mainEl    = document.getElementById('main-content');
-  const navEmail  = document.getElementById('nav-user-email');
-  const adminLink = document.getElementById('admin-link');
-
-  function showLoading() { loadingEl.classList.remove('hidden'); authEl.classList.remove('active'); pendingEl.classList.remove('active'); mainEl.classList.remove('visible'); }
-  function showAuth()    { loadingEl.classList.add('hidden');    authEl.classList.add('active');    pendingEl.classList.remove('active'); mainEl.classList.remove('visible'); }
-  function showPending() { loadingEl.classList.add('hidden');    authEl.classList.remove('active'); pendingEl.classList.add('active');    mainEl.classList.remove('visible'); }
-  function showMain()    { loadingEl.classList.add('hidden');    authEl.classList.remove('active'); pendingEl.classList.remove('active'); mainEl.classList.add('visible'); startTerminal(); }
-
-  function msg(id, text, type) {
-    const el = document.getElementById(id);
-    el.textContent = text; el.className = 'auth-msg ' + type;
-  }
-
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) { showAuth(); return; }
-    const snap = await getDoc(doc(db, 'users', user.uid));
-    if (!snap.exists()) { await signOut(auth); showAuth(); return; }
-    const data = snap.data();
-    if (!data.approved) { showPending(); return; }
-    navEmail.textContent = user.email;
-    if (data.role === 'admin') {
-      adminLink.style.display = 'inline-flex';
-      const mobileAdmin = document.getElementById('mobile-admin-link');
-      if (mobileAdmin) mobileAdmin.style.display = 'block';
-    }
-    showMain();
-  });
-
-  window.doLogin = async function() {
-    const email = document.getElementById('login-email').value.trim();
-    const pass  = document.getElementById('login-pass').value;
-    if (!email || !pass) { msg('login-msg','يرجى ملء جميع الحقول','error'); return; }
-    const btn = document.querySelector('#login-form .auth-btn');
-    btn.disabled = true; btn.textContent = 'جاري الدخول...';
-    try {
-      const cred = await signInWithEmailAndPassword(auth, email, pass);
-      const snap = await getDoc(doc(db, 'users', cred.user.uid));
-      if (!snap.exists() || !snap.data().approved) {
-        await signOut(auth);
-        msg('login-msg','حسابك لم تتم الموافقة عليه بعد. يرجى الانتظار.','warning');
-        btn.disabled = false; btn.textContent = 'دخول'; return;
-      }
-    } catch(e) {
-      // رسالة موحّدة لأخطاء بيانات الدخول (حماية من user enumeration)
-      const errors = {
-        'auth/user-not-found':     'البريد الإلكتروني أو كلمة المرور غير صحيحة',
-        'auth/wrong-password':     'البريد الإلكتروني أو كلمة المرور غير صحيحة',
-        'auth/invalid-credential': 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
-        'auth/invalid-email':      'صيغة البريد الإلكتروني غير صالحة',
-        'auth/too-many-requests':  'تم تجاوز عدد المحاولات. حاول لاحقاً',
-        'auth/network-request-failed': 'تعذّر الاتصال. تحقق من الإنترنت وحاول مجدداً'
-      };
-      msg('login-msg', errors[e.code] || 'حدث خطأ غير متوقع. حاول مجدداً.', 'error');
-      btn.disabled = false; btn.textContent = 'دخول';
-    }
-  };
-
-  window.doRegister = async function() {
-    const email = document.getElementById('reg-email').value.trim();
-    const pass  = document.getElementById('reg-pass').value;
-    if (!email || !pass) { msg('reg-msg','يرجى ملء جميع الحقول','error'); return; }
-    if (pass.length < 6)  { msg('reg-msg','كلمة المرور يجب أن تكون 6 أحرف على الأقل','error'); return; }
-    const btn = document.querySelector('#register-form .auth-btn');
-    btn.disabled = true; btn.textContent = 'جاري الإنشاء...';
-    try {
-      const cred = await createUserWithEmailAndPassword(auth, email, pass);
-      await setDoc(doc(db, 'users', cred.user.uid), {
-        email, role: 'user', approved: false, createdAt: new Date().toISOString()
-      });
-      await signOut(auth);
-      msg('reg-msg','✅ تم إنشاء الحساب! في انتظار موافقة المشرف.','success');
-      btn.disabled = false; btn.textContent = 'إنشاء حساب';
-    } catch(e) {
-      const errors = {
-        'auth/email-already-in-use': 'هذا البريد مسجل مسبقاً',
-        'auth/invalid-email':        'البريد الإلكتروني غير صالح',
-        'auth/weak-password':        'كلمة المرور ضعيفة جداً',
-        'auth/network-request-failed': 'تعذّر الاتصال. تحقق من الإنترنت وحاول مجدداً'
-      };
-      msg('reg-msg', errors[e.code] || 'حدث خطأ غير متوقع. حاول مجدداً.', 'error');
-      btn.disabled = false; btn.textContent = 'إنشاء حساب';
-    }
-  };
-
-  window.doLogout = async function() {
-    await signOut(auth); showAuth();
-  };
-
-  window.switchTab = function(tab) {
-    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('login-form').style.display    = tab === 'login'    ? 'flex' : 'none';
-    document.getElementById('register-form').style.display = tab === 'register' ? 'flex' : 'none';
-    document.querySelectorAll('.auth-tab')[tab === 'login' ? 0 : 1].classList.add('active');
-    document.getElementById('login-msg').className = 'auth-msg';
-    document.getElementById('reg-msg').className   = 'auth-msg';
-  };
-
-  window.smoothScroll = function(id) {
-    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-  };
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Enter') return;
-    if (!authEl.classList.contains('active')) return;
-    if (document.getElementById('login-form').style.display !== 'none') doLogin();
-    else doRegister();
-  });
-</script>
-
 <!-- ─── UI ENHANCEMENTS ─── -->
 <script>
-// ── إظهار / إخفاء كلمة المرور ──
-function togglePass(id, btn) {
-  const input = document.getElementById(id);
-  const show = input.type === 'password';
-  input.type = show ? 'text' : 'password';
-  btn.textContent = show ? '🙈' : '👁';
-  btn.setAttribute('aria-label', show ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور');
-}
-
 // ── قائمة الموبايل ──
 const hamburger  = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobile-menu');
@@ -1490,6 +1087,10 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' }));
+
+window.smoothScroll = function(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+};
 
 // ── كشف العناصر عند التمرير + العدّادات ──
 function animateCounter(el) {
@@ -1586,7 +1187,9 @@ function startTerminal() {
   }
   setTimeout(typeCommand, 600);
 }
-window.startTerminal = startTerminal;
+
+// بدء الموقع مباشرة (بدون تسجيل دخول)
+document.addEventListener('DOMContentLoaded', startTerminal);
 </script>
 
 </body>
