@@ -12,7 +12,16 @@
 <meta property="og:title" content="رعد الأسود — مهندس أمن سيبراني">
 <meta property="og:description" content="مشاريع برمجية عملية وأدوات أمن سيبراني. أبني أنظمة، أحلل الثغرات، وأطوّر حلولاً تقنية.">
 <meta property="og:locale" content="ar_IQ">
-<meta name="twitter:card" content="summary">
+<!-- ========================= -->
+<!-- صورة المعاينة عند مشاركة الرابط (تيليجرام / واتساب / تويتر) -->
+<!-- ضع صورة بمقاس 1200×630 باسم og-preview.png بجانب index.html، وعدّل الرابط أدناه إذا اختلف المسار -->
+<!-- ========================= -->
+<meta property="og:image" content="https://raadalaswed.github.io/og-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="رعد الأسود — مهندس أمن سيبراني">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raadalaswed.github.io/og-preview.png">
 
 <!-- Favicon (SVG inline) -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23040c18'/%3E%3Cpath d='M36 8 L20 36 h10 L26 56 L46 26 h-11 z' fill='%2338bdf8'/%3E%3C/svg%3E">
@@ -528,6 +537,34 @@ section > h2 {
 }
 .card-link:hover { background: rgba(56,189,248,0.18); transform: translateY(-2px); }
 
+/* ── إضافات المشاريع: عناوين المجموعات + شارة تسجيل الدخول + الملاحظة الاحترافية ── */
+/* عنوان يفصل مجموعتَي المشاريع (أنظمة قيد الاستخدام / مشاريع مفتوحة) */
+.projects-group-title {
+  grid-column: 1 / -1;
+  font-size: 14.5px; color: var(--c-text2); font-weight: 600;
+  margin: 6px 0 2px; display: flex; align-items: center; gap: 10px;
+}
+.projects-group-title:not(:first-of-type) { margin-top: 20px; }
+.projects-group-title::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(56,189,248,0.18), transparent);
+}
+/* شارة "يتطلب تسجيل الدخول" أعلى بطاقات الأنظمة الحقيقية */
+.login-badge {
+  display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+  color: var(--c-accent2);
+  background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.28);
+  padding: 4px 12px; border-radius: 20px;
+}
+/* الملاحظة الاحترافية أسفل وصف الأنظمة التي تتطلب تسجيل الدخول */
+.login-note {
+  color: var(--c-text2); font-size: 12.5px; line-height: 1.7;
+  background: rgba(56,189,248,0.05);
+  border-right: 2px solid rgba(56,189,248,0.4);
+  padding: 8px 12px; border-radius: 8px;
+}
+
 /* ─────────────────────────────────────────────
    CYBER TOOLS
 ───────────────────────────────────────────── */
@@ -871,50 +908,104 @@ footer span { color: var(--c-accent); }
   <div class="section-label reveal">PROJECTS</div>
   <h2 class="reveal reveal-delay-1">المشاريع</h2>
   <div class="grid">
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- المجموعة الأولى: أنظمة قيد الاستخدام الفعلي (تتطلب تسجيل الدخول) -->
+    <!-- ═══════════════════════════════════════════ -->
+    <h3 class="projects-group-title reveal">🔐 أنظمة قيد الاستخدام الفعلي</h3>
+
+    <!-- 1) نظام المبيعات (المشروع المميّز) -->
     <div class="card featured reveal reveal-delay-1 reveal-scale">
       <div class="card-top"><div class="card-icon">🛒</div><span class="card-tag tag-gold">⭐ POS</span></div>
+      <span class="login-badge">🔒 يتطلب تسجيل الدخول</span>
       <h3>نظام المبيعات</h3>
       <p>نظام نقاط بيع ومخزون متكامل: بيع، جرد، تقارير، أقسام، ولوحة تحكم بإحصائيات ورسوم بيانية حيّة.</p>
-      <div class="card-links">
-        <a class="card-link demo" href="https://raadalaswed.github.io/sales/sales.html?demo=1" target="_blank" rel="noopener">🧪 جرّب النظام مباشرة — بيع تجريبي كامل</a>
-      </div>
+      <div class="login-note">نظام نقاط بيع مُستخدم فعلياً في محلات حقيقية، لذا يتطلب تسجيل الدخول لحماية بيانات المبيعات والعملاء.</div>
     </div>
+
+    <!-- 2) دفتر الديون -->
     <div class="card reveal reveal-delay-2 reveal-scale">
+      <div class="card-top"><div class="card-icon">📒</div><span class="card-tag">Finance</span></div>
+      <span class="login-badge">🔒 يتطلب تسجيل الدخول</span>
+      <h3>دفتر الديون</h3>
+      <p>إدارة ديون الزبائن وتتبع الحسابات بسهولة ودقة.</p>
+      <div class="login-note">هذا النظام قيد الاستخدام لإدارة حسابات زبائن حقيقيين، ويتطلب تسجيل الدخول للحفاظ على خصوصية البيانات المالية.</div>
+      <a class="card-link" href="https://raadalaswed.github.io/mangerr/" target="_blank" rel="noopener">فتح المشروع ←</a>
+    </div>
+
+    <!-- 3) مصاريفي -->
+    <div class="card reveal reveal-delay-3 reveal-scale">
+      <div class="card-top"><div class="card-icon">💳</div><span class="card-tag">Finance</span></div>
+      <span class="login-badge">🔒 يتطلب تسجيل الدخول</span>
+      <h3>مصاريفي</h3>
+      <p>تتبع المصاريف الشخصية وتحليل الميزانية بذكاء.</p>
+      <div class="login-note">نظام مخصّص للمستخدمين المسجّلين، حيث تُحفظ البيانات المالية الشخصية بشكل آمن ومعزول لكل مستخدم.</div>
+      <a class="card-link" href="https://raadalaswed.github.io/abc/" target="_blank" rel="noopener">فتح المشروع ←</a>
+    </div>
+
+    <!-- 4) نظام الدومنة -->
+    <div class="card reveal reveal-delay-4 reveal-scale">
+      <div class="card-top"><div class="card-icon">🎲</div><span class="card-tag">Games</span></div>
+      <span class="login-badge">🔒 يتطلب تسجيل الدخول</span>
+      <h3>نظام الدومنة</h3>
+      <p>تنظيم بطولات الدومنة وجدولة المباريات بين الفرق.</p>
+      <div class="login-note">نظام تشغيلي يستخدمه منظّمو بطولات وفرق فعليون، لذا يتطلب تسجيل الدخول لإدارة الحسابات والبيانات.</div>
+      <a class="card-link" href="https://raadalaswed.github.io/do/" target="_blank" rel="noopener">فتح المشروع ←</a>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- المجموعة الثانية: مشاريع مفتوحة للتجربة -->
+    <!-- ═══════════════════════════════════════════ -->
+    <h3 class="projects-group-title reveal">🌐 مشاريع مفتوحة للتجربة</h3>
+
+    <!-- 5) نظام الجيم -->
+    <div class="card reveal reveal-delay-1 reveal-scale">
       <div class="card-top"><div class="card-icon">🏋️</div><span class="card-tag">Fitness</span></div>
       <h3>نظام الجيم</h3>
       <p>نظام شخصي لتتبع التمارين والكورسات وتنظيم التدريب بشكل احترافي.</p>
       <a class="card-link" href="https://raadalaswed.github.io/newgym/" target="_blank" rel="noopener">فتح المشروع ←</a>
     </div>
+
+    <!-- 6) نظام كراج -->
     <div class="card reveal reveal-delay-2 reveal-scale">
       <div class="card-top"><div class="card-icon">🚗</div><span class="card-tag">Business</span></div>
       <h3>نظام كراج</h3>
       <p>إدارة إدخال وإخراج السيارات مع تفاصيل كاملة والأجور.</p>
       <a class="card-link" href="https://raadalaswed.github.io/garage/" target="_blank" rel="noopener">فتح المشروع ←</a>
     </div>
-    <div class="card reveal reveal-delay-3 reveal-scale">
-      <div class="card-top"><div class="card-icon">📒</div><span class="card-tag">Finance</span></div>
-      <h3>دفتر الديون</h3>
-      <p>إدارة ديون الزبائن وتتبع الحسابات بسهولة ودقة.</p>
-      <a class="card-link" href="https://raadalaswed.github.io/mangerr/" target="_blank" rel="noopener">فتح المشروع ←</a>
-    </div>
-    <div class="card reveal reveal-delay-1 reveal-scale">
-      <div class="card-top"><div class="card-icon">💳</div><span class="card-tag">Finance</span></div>
-      <h3>مصاريفي</h3>
-      <p>تتبع المصاريف الشخصية وتحليل الميزانية بذكاء.</p>
-      <a class="card-link" href="https://raadalaswed.github.io/abc/" target="_blank" rel="noopener">فتح المشروع ←</a>
-    </div>
-    <div class="card reveal reveal-delay-2 reveal-scale">
-      <div class="card-top"><div class="card-icon">🎲</div><span class="card-tag">Games</span></div>
-      <h3>نظام الدومنة</h3>
-      <p>تنظيم بطولات الدومنة وجدولة المباريات بين الفرق.</p>
-      <a class="card-link" href="https://raadalaswed.github.io/do/" target="_blank" rel="noopener">فتح المشروع ←</a>
-    </div>
+
+    <!-- 7) منشئ الملف الشخصي -->
     <div class="card reveal reveal-delay-3 reveal-scale">
       <div class="card-top"><div class="card-icon">🪪</div><span class="card-tag">Builder</span></div>
       <h3>منشئ الملف الشخصي</h3>
       <p>أنشئ صفحة شخصية احترافية لعرض مهاراتك ومشاريعك، واحصل على رابط وQR Code لمشاركتها بسهولة.</p>
       <a class="card-link" href="https://raadalaswed.github.io/PortfolioBuilder/" target="_blank" rel="noopener">فتح المشروع ←</a>
     </div>
+
+    <!-- ========================= -->
+    <!-- مشروع احتياطي رقم 1 -->
+    <!-- غيّر الاسم والوصف والرابط من هنا -->
+    <!-- (استبدل # بالرابط الحقيقي، وأضف target="_blank" rel="noopener" إذا كان رابطاً خارجياً) -->
+    <!-- ========================= -->
+    <div class="card reveal reveal-delay-4 reveal-scale">
+      <div class="card-top"><div class="card-icon">🚧</div><span class="card-tag">Soon</span></div>
+      <h3>مشروع قيد التطوير</h3>
+      <p>سيتم إضافة مشروع جديد قريباً.</p>
+      <a class="card-link" href="#" rel="noopener">قريباً ←</a>
+    </div>
+
+    <!-- ========================= -->
+    <!-- مشروع احتياطي رقم 2 -->
+    <!-- غيّر الاسم والوصف والرابط من هنا -->
+    <!-- (استبدل # بالرابط الحقيقي، وأضف target="_blank" rel="noopener" إذا كان رابطاً خارجياً) -->
+    <!-- ========================= -->
+    <div class="card reveal reveal-delay-4 reveal-scale">
+      <div class="card-top"><div class="card-icon">🚧</div><span class="card-tag">Soon</span></div>
+      <h3>مشروع قيد التطوير</h3>
+      <p>سيتم إضافة مشروع جديد قريباً.</p>
+      <a class="card-link" href="#" rel="noopener">قريباً ←</a>
+    </div>
+
   </div>
 </section>
 
